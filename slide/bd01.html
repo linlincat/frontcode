@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="css/slide.css" media="all"/>
 </head>
 <body>
-<!-- http://iwan.baidu.com/ -->
 <div id="mp-banner" class="mp-banner">
     <div id="j-banner" class="mp-banner-wrap">
         <div class="mp-banner-inner">
@@ -150,5 +149,101 @@
         </ul>
     </div>
 </div>
+<script type="text/javascript">
+    (function(){
+        var box = document.getElementById('j-banner');
+        var prev = document.getElementById('mp-banner-pager-prev');
+        var next = document.getElementById('mp-banner-pager-next');
+        var list = document.getElementById('mp-banner-ct');
+        var items = list.getElementsByTagName('li');
+        var li = items[0];
+        var now = 0;
+        var timer = null;
+
+        timer = setInterval(auto, 3000);
+        list.style.position = 'relative';
+        list.style.width = '20000px';
+        list.style.left = '0px';
+
+        prev.onclick = function(){
+            if(now == 0){
+                for(var i = 3; i < 6; i++){
+                    move(items[i], -1560);
+                }
+                act(list, 'left', (li.clientWidth + 23) * 3, function(){
+                    for(var i = 3; i < 6; i++){
+                        clear(items[i]);
+                    }
+                    list.style.left = '-780px';
+                });
+                now += 3;
+            } else {
+                act(list, 'left', (li.clientWidth + 23) * 0);
+                now = 0;
+            }
+        }
+
+        next.onclick = function(){
+            if(now == 0){
+                act(list, 'left', -(li.clientWidth + 23) * 3);
+                now += 3;
+            } else {
+                for(var i = 0; i < 3; i++){
+                    move(items[i], 1560);
+                }
+                act(list, 'left', -(li.clientWidth + 23) * 6, function(){
+                    for(var i = 0; i < 3; i++){
+                        clear(items[i]);
+                    }
+                    list.style.left = '0';
+                });
+                now = 0;
+            }
+        }
+
+        box.onmouseover = function(){
+            prev.style.display = 'block';
+            next.style.display = 'block';
+            clearInterval(timer);
+        }
+        box.onmouseout = function(){
+            prev.style.display = 'none';
+            next.style.display = 'none';
+            timer = setInterval(play, 4000);
+        }
+
+        function auto(){
+            timer = setInterval(play, 4000);
+        }
+        function play(){
+            next.onclick();
+        }
+
+        function act(obj, attr, target, fn){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var cur = 0;
+                cur = parseInt(obj.style[attr]);
+                var speed = (target - cur) / 8;
+                speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                if(cur == target){
+                    clearInterval(obj.timer);
+                    fn && fn();
+                } else {
+                    obj.style[attr] = cur + speed + 'px';
+                }
+            }, 30);
+        }
+
+        function move(obj, val){
+            obj.style.position = 'relative';
+            obj.style.left = val + 'px';
+        }
+        function clear(obj){
+            obj.removeAttribute('style');
+        }
+
+    }());
+</script>
 </body>
 </html>
